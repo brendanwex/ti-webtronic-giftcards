@@ -27,12 +27,12 @@ class Extension extends BaseExtension
     public function boot(): void
     {
         Event::listen('igniter.cart.beforeApplyCoupon', function($code) {
-                return resolve(Manager::class)->applyGiftCardCode($code);
+            return resolve(Manager::class)->applyGiftCardCode($code);
 
         });
 
         Event::listen('igniter.checkout.beforePayment', function(Order $order, $data): void {
-                resolve(Manager::class)->redeemGiftCard($order);
+            resolve(Manager::class)->redeemGiftCard($order);
 
         });
     }

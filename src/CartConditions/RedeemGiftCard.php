@@ -49,7 +49,7 @@ class RedeemGiftCard extends CartCondition
 
             $cartSubtotal = Cart::content()->subtotalWithoutConditions();
 
-            $this->giftCardValue = min($cartSubtotal, $giftCard->remainingValue);
+            $this->giftCardValue = min($cartSubtotal, $giftCard->balance);
         } catch (Exception $ex) {
             flash()->alert($ex->getMessage())->now();
             $this->removeMetaData('code');

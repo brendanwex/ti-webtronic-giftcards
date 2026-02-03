@@ -45,13 +45,16 @@ class Manager
     {
 
 
+        Log::error(json_encode($giftCard));
+
+
 
 
         if ($giftCard->status !== 'success') {
             throw new ApplicationException(lang('webtronicie.giftcards::default.alert_gift_card_redeemed'));
         }
 
-        if ($giftCard->balances->current_balance <= Settings::getMinimumValue()) {
+        if ($giftCard->balance <= Settings::getMinimumValue()) {
             throw new ApplicationException(lang('webtronicie.giftcards::default.alert_gift_card_balance_low'));
         }
     }
@@ -72,14 +75,15 @@ class Manager
 
         $payload = [
             'amount' => abs($condition->getValue()),
-            'api_key' => null,
-            'code' => $condition->getMetaData('code')
+            'api_key' => Settings::getApiKey(),
+            'code' => $condition->getMetaData('code'),
+            'source' => 'Online - Order #'.$order->order_id
         ];
 
         $response = $this->sendRequest('POST', 'redeem_voucher', $payload);
 
         if ($order->payment_method) {
-            $order->logPaymentAttempt('Gift card redeemed successful', 1, $payload, $response);
+            $order->logPaymentAttempt('Gift card redeemed successful - '.$payload['code'], 1, $payload, $response);
         }
     }
 
@@ -91,8 +95,12 @@ class Manager
             return self::$responseCache[$code];
         }
         $apiKey = Settings::getApiKey();
+        $resp =  (object)$this->sendRequest('POST', 'check_balance/', ['code' => $code, 'api_key' => $apiKey]);
 
-        return self::$responseCache[$code] = (object)$this->sendRequest('POST', 'check_balance/', ['code' => $code, 'api_key' => $apiKey]);
+
+        return $resp;
+
+        //return self::$responseCache[$code] = (object)$this->sendRequest('POST', 'check_balance/', ['code' => $code, 'api_key' => $apiKey]);
     }
 
     public function clearInternalCache(): void
@@ -109,17 +117,19 @@ class Manager
                 throw new Exception(lang('webtronicie.giftcards::default.alert_missing_api_key'));
             }
 
-            $headers = [
-                'Content-Type' => 'application/json',
-            ];
 
 
 
-            $request = Http::withHeaders($headers)->send($method, $endpoint.'/'.$uri, $payload);
+
+            //$request = Http::send($method, $endpoint.'/'.$uri, $payload);
+
+            $request = Http::asJson()->post($endpoint.'/'.$uri, $payload);
 
             if (!$request->ok()) {
                 throw new ApplicationException('Error while communicating with the gift card server '.json_encode($request->json()));
             }
+
+            //logger()->error($request->json());
 
             return $request->json();
         } catch (Exception $ex) {
