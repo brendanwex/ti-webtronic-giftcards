@@ -1,0 +1,53 @@
+{
+    "name": "WebtronicIE/ti-webtronic-giftcards",
+    "type": "tastyigniter-package",
+    "description": "Sell and accept gift cards on your TastyIgniter website Webtronic!",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Webtronic"
+        }
+    ],
+    "keywords": [
+        "tastyigniter",
+        "gift-card",
+        "giftcard"
+    ],
+    "require": {
+        "tastyigniter/core": "^v4.0",
+        "tastyigniter/ti-ext-cart": "^4.0"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "WebtronicIE\\GiftCards\\": "src/"
+        }
+    },
+
+    "extra": {
+        "tastyigniter-extension": {
+            "code": "webtronicie.giftcard",
+            "name": "Webtronic Gift Cards",
+            "icon": {
+                "image": "icon.svg",
+                "backgroundColor": "#fc0",
+                "color": "#000000"
+            },
+            "homepage": "https://webtronic.ie/"
+        },
+        "branch-alias": {
+            "dev-master": "1.0"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true,
+            "composer/installers": true
+        },
+        "sort-packages": true
+    }
+
+}
