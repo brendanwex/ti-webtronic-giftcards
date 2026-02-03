@@ -26,10 +26,10 @@
 
     "extra": {
         "tastyigniter-extension": {
-            "code": "webtronicie.giftcard",
+            "code": "webtronicie.giftcards",
             "name": "Webtronic Gift Cards",
             "icon": {
-                "image": "icon.svg",
+                "image": "fa fa-gift",
                 "backgroundColor": "#fc0",
                 "color": "#000000"
             },
