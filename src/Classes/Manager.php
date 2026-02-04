@@ -45,10 +45,6 @@ class Manager
     {
 
 
-        Log::error(json_encode($giftCard));
-
-
-
 
         if ($giftCard->status !== 'success') {
             throw new ApplicationException(lang('webtronicie.giftcards::default.alert_gift_card_redeemed'));
@@ -97,10 +93,7 @@ class Manager
         $apiKey = Settings::getApiKey();
         $resp =  (object)$this->sendRequest('POST', 'check_balance/', ['code' => $code, 'api_key' => $apiKey]);
 
-
-        return $resp;
-
-        //return self::$responseCache[$code] = (object)$this->sendRequest('POST', 'check_balance/', ['code' => $code, 'api_key' => $apiKey]);
+        return self::$responseCache[$code] = $resp;
     }
 
     public function clearInternalCache(): void
@@ -121,15 +114,12 @@ class Manager
 
 
 
-            //$request = Http::send($method, $endpoint.'/'.$uri, $payload);
-
             $request = Http::asJson()->post($endpoint.'/'.$uri, $payload);
 
             if (!$request->ok()) {
                 throw new ApplicationException('Error while communicating with the gift card server '.json_encode($request->json()));
             }
 
-            //logger()->error($request->json());
 
             return $request->json();
         } catch (Exception $ex) {
